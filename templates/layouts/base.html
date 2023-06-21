@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="/assets/main.css" rel="stylesheet" />
+    <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/assets/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/assets/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.2"
+      integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
+      crossorigin="anonymous"
+    ></script>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <div id="content">{% block content %}{% endblock %}</div>
+  </body>
+</html>

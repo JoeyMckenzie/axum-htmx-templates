@@ -1,0 +1,70 @@
+[env] ## tells cargo make that we're in the context of a Cargo workspace
+DOCKER_BUILD_TAG = "test_app"
+PORT = 8080
+
+[tasks.run]
+env = { "RUST_ENV" = "development", "PORT" = "${PORT}" }
+install_crate = "cargo-watch"
+command = "cargo"
+args = ["watch", "-x", "run"]
+
+[tasks.styles]
+command = "pnpm"
+args = [
+    "dlx",
+    "tailwindcss",
+    "-i",
+    "./styles/tailwind.css",
+    "-o",
+    "./assets/main.css",
+    "--watch",
+]
+
+[tasks.chef]
+install_crate = "cargo-chef"
+command = "cargo"
+args = ["+nightly", "chef", "prepare", "--recipe-path", "recipe.json"]
+
+[tasks.docker-build]
+command = "docker"
+# env_files = [".env"]
+args = [
+    "build",
+    ".",
+    # "--build-arg",
+    # "DATABASE_URL=${DATABASE_URL}",
+    "--build-arg",
+    "RUST_ENV=${RUST_ENV}",
+    "-t",
+    "${DOCKER_BUILD_TAG}",
+]
+
+[tasks.docker-run]
+command = "docker"
+args = [
+    "run",
+    "-d",
+    "-e",
+    "PORT=${PORT}",
+    "-p",
+    "${PORT}:${PORT}",
+    "--name",
+    "${DOCKER_BUILD_TAG}",
+    "-it",
+    "${DOCKER_BUILD_TAG}",
+]
+
+[tasks.docker-stop]
+command = "docker"
+args = ["stop", "${DOCKER_BUILD_TAG}"]
+
+[tasks.docker-start]
+command = "docker"
+args = ["stop", "${DOCKER_BUILD_TAG}"]
+
+[tasks.docker-rm]
+command = "docker"
+args = ["rm", "${DOCKER_BUILD_TAG}"]
+
+[tasks.docker-refresh]
+dependencies = ["docker-stop", "docker-rm", "docker-build", "docker-run"]

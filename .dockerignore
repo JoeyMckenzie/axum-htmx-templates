@@ -1,0 +1,17 @@
+# ignore files
+
+.gitignore
+.prettierignore
+
+# web stuff, not needed for building
+
+.prettierrc.cjs
+
+# don't need our task file 
+
+Makefile.toml
+
+# build output files
+
+/target
+/node_modules
