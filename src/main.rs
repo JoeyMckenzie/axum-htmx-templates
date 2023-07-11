@@ -20,9 +20,10 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let api_router = Router::new().route("/hello", get(say_hello));
-    let assets_path = std::env::current_dir().unwrap();
+    info!("initializing router and assets");
 
+    let assets_path = std::env::current_dir().unwrap();
+    let api_router = Router::new().route("/hello", get(say_hello));
     let app = Router::new()
         .route("/", get(home))
         .route("/learn", get(learn_more))
@@ -32,9 +33,11 @@ async fn main() -> anyhow::Result<()> {
             ServeDir::new(format!("{}/assets", assets_path.to_str().unwrap())),
         );
 
-    // run it
+    // run it, make sure you handle parsing your environment variables properly!
     let port = std::env::var("PORT").unwrap().parse::<u16>().unwrap();
     let addr = std::net::SocketAddr::from(([0, 0, 0, 0], port));
+
+    info!("router initialized, not listening on port {}", port);
 
     axum::Server::bind(&addr)
         .serve(app.into_make_service())

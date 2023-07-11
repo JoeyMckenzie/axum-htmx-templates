@@ -6,8 +6,9 @@
 # web stuff, not needed for building
 
 .prettierrc.cjs
+assets/main.css
 
-# don't need our task file 
+# don't need our task file
 
 Makefile.toml
 
