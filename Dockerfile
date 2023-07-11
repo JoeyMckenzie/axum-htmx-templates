@@ -1,16 +1,14 @@
-ARG NODE_VERSION=
-
 FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
 
 WORKDIR /app
 
-# stage 1, prepare the recipe for build caching 
+# stage 1, prepare the recipe for build caching
 FROM chef AS planner
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
 # stage 2, copy over source code and build
-FROM chef AS rust_builder 
+FROM chef AS rust_builder
 COPY --from=planner /app/recipe.json recipe.json
 
 # Build dependencies - this is the caching Docker layer!
@@ -45,7 +43,7 @@ FROM debian:buster-slim AS runtime
 
 WORKDIR /app
 
-# we'll copy over the executable from our server builder and the compiled tailwind assets separately - layer caching FTW! 
+# we'll copy over the executable from our server builder and the compiled tailwind assets separately - layer caching FTW!
 COPY --from=rust_builder /app/target/release/axum-static-web-server ./server
 COPY --from=node_builder /app/assets ./assets
 
