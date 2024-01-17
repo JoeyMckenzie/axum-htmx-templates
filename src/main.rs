@@ -6,6 +6,7 @@ use axum::{
     routing::get,
     Router,
 };
+use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -36,11 +37,13 @@ async fn main() -> anyhow::Result<()> {
     // run it, make sure you handle parsing your environment variables properly!
     let port = std::env::var("PORT").unwrap().parse::<u16>().unwrap();
     let addr = std::net::SocketAddr::from(([0, 0, 0, 0], port));
+    let listener = TcpListener::bind(addr)
+        .await
+        .context("error port already in use")?;
 
     info!("router initialized, not listening on port {}", port);
 
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    axum::serve(listener, app.into_make_service())
         .await
         .context("error while starting API server")?;
 
